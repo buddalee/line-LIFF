@@ -1,84 +1,669 @@
+<!DOCTYPE html>
+<html>
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFF Starter</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
+    <title>Line 電子名片</title>
+    <meta name="description" content="製作專屬的電子名片 | 中華電信林彥宏">
+    <meta property="og:title" content="中華電信林彥宏">
+    <meta property="og:description" content="製作專屬的電子名片 | 中華電信林彥宏">
+    <meta property="og:image"
+        content="https://namecard.linebot.tw/uploads/others/7f3d76e6-02f1-4a21-95af-f47a5d99a3ed.png">
+    <style>
+        .btn-line {
+            background-color: #00c300;
+        }
+
+        .btn {
+            width: 100%;
+            height: 60px;
+        }
+
+        .btn+.btn {
+            margin-top: 15px;
+        }
+
+        .link {
+            margin-left: 0x;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .link {
+            margin-left: 0x;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        @media screen and (min-width: 500px) {
+            .btn {
+                width: auto;
+            }
+
+            .btn+.btn {
+                margin-top: 0px;
+                margin-left: 15px;
+            }
+
+            .link {
+                display: block;
+            }
+
+            .card {
+                height: 520px;
+            }
+        }
+
+        .img-circle {
+            border: #E6E5E1 5px solid;
+            margin-bottom: 50px;
+            margin-top: -125px;
+            border-radius: 50%;
+            width: 240px;
+        }
+
+        .card {
+            width: 500px;
+            height: 520px;
+            margin: 50px auto;
+            background-color: #E6E5E1;
+            border-radius: 0px;
+            border: 0;
+            box-shadow: 20px 20px 40px rgba(0, 0, 0, .2);
+        }
+
+        .card-title {
+            font-size: 24px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1px;
+            margin-bottom: 25%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.js"
+        integrity="sha512-DtTYd1g6TRpxfYHg+o7hVopdDBafEPnLs81XFiu5rVLr3eamPxvnuJUhwF5w4Z2GJbA/vpE7emalj7pKjnMphQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
-    <div class="buttongroup">
-        <div class="buttonrow">
-            <button id="openwindowbutton">Open Window</button>
-            <button id="closewindowbutton">Close Window</button>
+    <div class="container-fluid">
+        <div class="row justify-content-center m-2" style="height:100vh">
+            <div class="col-12 text-center mb-2 d-flex justify-content-center align-items-end">
+                <button type="button" class="btn text-white remove-border btn-rounded btn-line" id="btnShare"
+                    onclick="sendShare()">點我分享名片給好友 share to
+                    friend</button>
+            </div>
+            <div class="card text-center">
+                <img class="card-img-top"
+                    src="https://1.bp.blogspot.com/-0KkePRK6_pE/TktLOqhfYXI/AAAAAAAAABM/BqyvCWkC5GE/s1600/%25E4%25B8%25AD%25E8%258F%25AF%25E9%25BB%2583%25E9%25A0%2581.gif"
+                    style="height: 180px; width: 100%; display: block;" />
+                <div class="card-block">
+                    <img class="img-circle" alt="200x200"
+                        src="https://namecard.linebot.tw/uploads/others/7f3d76e6-02f1-4a21-95af-f47a5d99a3ed.png">
+                    <h4 class="card-title">
+                        中華電信林彥宏
+                    </h4>
+                    <p>BUSINESS CARD</p>
+                </div>
+                <div class="link">
+                    <button type="button" class="btn text-white remove-border btn-rounded btn-line"
+                        onclick="sendShare()">分享名片給好友</button>
+                    <button type="button" class="btn text-white remove-border btn-rounded btn-line"
+                        onclick="myLiffSendMessage()">傳送到本聊天室</button>
+                    <button type="button" id="copy" class="btn text-white remove-border btn-rounded btn-line"
+                        data-clipboard-text="https://liff.line.me/1656116506-oDaj2d3e">點我複製連結</button>
+                </div>
+            </div>
         </div>
-        <div class="buttonrow">
-            <button id="getaccesstoken">Get Access Token</button>
-            <button id="getprofilebutton">Get Profile</button>
-            <button id="sendmessagebutton">Send Message</button>
-        </div>
     </div>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        function myLiffSendMessage() {//https://developers.line.biz/en/reference/liff/#send-messages
+            if (!liff.isInClient()) {
+                alert('請到 Line 應用程式之中使用')
+            } else {
+                liff.sendMessages([{
+                    type: 'text',
+                    text: "You've successfully sent a message! Hooray!"
+                }]).then(function () {
+                    window.alert('傳送成功')
+                }).catch(function (error) {
+                    window.alert('Error sending message: ' + error);
+                });
+            }
+        }
+        function checkLogin() {
+            console.log('!!!', liff)
+            if (!liff.isLoggedIn()) {
+                const answer = confirm('您確定要登入 Line 嗎？');
+                if (answer) {
+                    liff.login()
+                }
+            }
+        }
+        async function sendShare() {
+            console.log('~~~')
+            checkLogin(sendShare)
+            const result = await liff.shareTargetPicker([
+                {
+                    type: 'flex',
+                    "altText": "Flex Message",
+                    "contents": {
+                        "type": "carousel",
+                        contents: [
+                            {
+                                "type": "bubble",
+                                "hero": {
+                                    "type": "image",
+                                    "url": "https://namecard.linebot.tw/uploads/others/7f3d76e6-02f1-4a21-95af-f47a5d99a3ed.png",
+                                    "size": "full",
+                                    "aspectRatio": "16:18",
+                                    "aspectMode": "cover",
+                                    "action": {
+                                        "type": "uri",
+                                        "uri": "http://linecorp.com/"
+                                    }
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "架設網站找彥宏",
+                                            "weight": "bold",
+                                            "size": "xl",
+                                            "align": "center"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "margin": "lg",
+                                            "spacing": "sm",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "spacing": "md",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "架設網站找彥宏最划算",
+                                                            "wrap": true,
+                                                            "color": "#f95454",
+                                                            "size": "md",
+                                                            "flex": 5,
+                                                            "weight": "bold"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "spacing": "sm",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Google 關鍵字廣告",
+                                                            "wrap": true,
+                                                            "color": "#333333",
+                                                            "size": "md",
+                                                            "flex": 5,
+                                                            "weight": "bold"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "spacing": "sm",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "Facebook 廣告",
+                                                            "wrap": true,
+                                                            "color": "#333333",
+                                                            "size": "md",
+                                                            "flex": 5,
+                                                            "weight": "bold"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "spacing": "sm",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Youtube 廣告",
+                                                    "wrap": true,
+                                                    "color": "#333333",
+                                                    "size": "md",
+                                                    "flex": 5,
+                                                    "weight": "bold"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "spacing": "sm",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "網站規劃百年經驗",
+                                                    "wrap": true,
+                                                    "color": "#f95454",
+                                                    "size": "md",
+                                                    "flex": 5,
+                                                    "weight": "bold"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "spacing": "sm",
+                                            "contents": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "想了解即可撥打 0912599910",
+                                                    "wrap": true,
+                                                    "color": "#f95454",
+                                                    "size": "md",
+                                                    "flex": 5,
+                                                    "weight": "bold"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "height": "sm",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "彥宏的粉絲頁",
+                                                "uri": "https://www.facebook.com/garry82910"
+                                            },
+                                            "color": "#ffffff"
+                                        }
+                                    ],
+                                    "flex": 0,
+                                    "backgroundColor": "#3b5998"
+                                }
+                            },{
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第二張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                                                        {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第三張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第四張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                                                        {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第五張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                                                        {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第六張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                                                        {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第七張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                                                        {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第八張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第九張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第十張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "這是第十一張",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "Hello, World!",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "Go",
+                                                "uri": "https://example.com"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ])
+            if (result) {
+                alert(`[${result.status}] Message sent!`)
+            } else {
+                const [majorVer, minorVer, patchVer] = (liff.getLineVersion() || "").split('.');
 
-    <div id="accesstokendata">
-        <h2>Access Token</h2>
-        <a href="#" onclick="toggleAccessToken()">Close Access Token</a>
-        <table border="1">
-            <tr>
-                <th>accessToken</th>
-                <td id="accesstokenfield"></td>
-            </tr>
-        </table>
-    </div>
+                if (minorVer === undefined) {
+                    alert('ShareTargetPicker was canceled in external browser')
+                    return
+                }
 
-    <div id="profileinfo">
-        <h2>Profile</h2>
-        <a href="#" onclick="toggleProfileData()">Close Profile</a>
-        <div id="profilepicturediv">
-        </div>
-        <table border="1">
-            <tr>
-                <th>userId</th>
-                <td id="useridprofilefield"></td>
-            </tr>
-            <tr>
-                <th>displayName</th>
-                <td id="displaynamefield"></td>
-            </tr>
-            <tr>
-                <th>statusMessage</th>
-                <td id="statusmessagefield"></td>
-            </tr>
-        </table>
-    </div>
+                if (parseInt(majorVer) >= 10 && parseInt(minorVer) >= 10 && parseInt(patchVer) > 0) {
+                    alert('ShareTargetPicker was canceled in LINE app')
+                }
+            }
+        }
+        function logOut() {
+            liff.logout()
+            window.location.reload()
+        }
+        async function main() {
+            await liff.init({ liffId: "1656116506-oDaj2d3e" })
+            var clipboard = new ClipboardJS('#copy');
 
-    <div id="liffdata">
-        <h2>LIFF Data</h2>
-        <table border="1">
-            <tr>
-                <th>language</th>
-                <td id="languagefield"></td>
-            </tr>
-            <tr>
-                <th>context.viewType</th>
-                <td id="viewtypefield"></td>
-            </tr>
-            <tr>
-                <th>context.userId</th>
-                <td id="useridfield"></td>
-            </tr>
-            <tr>
-                <th>context.utouId</th>
-                <td id="utouidfield"></td>
-            </tr>
-            <tr>
-                <th>context.roomId</th>
-                <td id="roomidfield"></td>
-            </tr>
-            <tr>
-                <th>context.groupId</th>
-                <td id="groupidfield"></td>
-            </tr>
-        </table>
-    </div>
-    
-    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-    <script src="liff-starter.js"></script>
+            clipboard.on('success', function (e) {
+                console.info('Action:', e.action);
+                console.info('Text:', e.text);
+                console.info('Trigger:', e.trigger);
+                alert('複製成功')
+                e.clearSelection();
+            });
+
+            clipboard.on('error', function (e) {
+                console.error('Action:', e.action);
+                console.error('Trigger:', e.trigger);
+            });
+        }
+        main()
+    </script>
+
 </body>
+
+</html>
